@@ -30,4 +30,6 @@
 *.exe
 *.out
 *.app
-logs/
+logs/customers.txt
+logs/products.txt
+logs/transactions.txt
