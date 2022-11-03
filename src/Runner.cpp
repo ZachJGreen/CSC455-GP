@@ -14,6 +14,12 @@ string transactionsFile = "../logs/transactions.txt";
 
 class Parser {
     public:
+        /**
+         * Parse customer data from file to list
+         * 
+         * @param parseFile File whos values are to be parsed into Customer objects
+         * @return `list<Structures::Customer>` A list of parsed Customer objects
+         */
         list<Structures::Customer> customerList(ifstream& parseFile) {
             string line;
             if (parseFile.is_open()) {
@@ -27,7 +33,12 @@ class Parser {
             }
             return;
         };
-
+        /**
+         * Parse transaction data from file to list
+         * 
+         * @param parseFile File whos values are to be parsed into Transaction objects
+         * @return `list<Structures::Transaction>` A list of parsed Transaction objects
+         */
         list<Structures::Transaction> transactionList(ifstream& parseFile) {
             string line;
             if (parseFile.is_open()) {
@@ -41,7 +52,12 @@ class Parser {
             }
             return;
         }
-
+    /**
+     * Parse product data from file to list
+     * 
+     * @param parseFile File whos values are to be parsed into Product objects
+     * @return `list<Structures::Product>` A list of parsed Product objects
+     */
         list<Structures::Product> productList(ifstream& parseFile) {
             string line;
             if (parseFile.is_open()) {
@@ -59,6 +75,12 @@ class Parser {
 
 class Writer {
     public:
+    /**
+     * Write customer data from list to file
+     * 
+     * @param writeFile File to write the values of the Customer list to
+     * @return `bool` A boolean denoting if values were successfully written
+     */
         void customerList(ofstream& writeFile){
             if (writeFile.is_open()) {
                 // Writer info goes here
@@ -68,6 +90,12 @@ class Writer {
             }
             return;
         }
+    /**
+     * Write transaction data from list to file
+     * 
+     * @param writeFile File to write the values of the Transaction list to
+     * @return `bool` A boolean denoting if values were successfully written
+     */
         void transactionList(ofstream& writeFile){
             if (writeFile.is_open()) {
                 // Writer info goes here
@@ -77,6 +105,12 @@ class Writer {
             }
             return;
         }
+    /**
+     * Write product data from list to file
+     * 
+     * @param writeFile File to write the values of the Product list to
+     * @return `bool` A boolean denoting if values were successfully written
+     */
         void productList(ofstream& writeFile){
             if (writeFile.is_open()) {
                 // Writer info goes here
@@ -87,21 +121,26 @@ class Writer {
             return;
         }
 };
-
-bool ReadFileData(string fileName) {
+/**
+ * Read file and perform appropriate parsing
+ * 
+ * @param filePath File path String
+ * @return `bool` A boolean denoting if the values were successfully read
+ */
+bool ReadFileData(string filePath) {
     Parser parse;
     ifstream readFile;
-    readFile.open(fileName);
+    readFile.open(filePath);
     if (readFile.is_open()) {
         cout << "Reading: " << customersFile << endl;
         // Parse files
-        if (fileName == customersFile) {
+        if (filePath == customersFile) {
             parse.customerList (readFile);
         }
-        else if (fileName == productsFile) {
+        else if (filePath == productsFile) {
             parse.productList(readFile);
         }
-        else if (fileName == transactionsFile) {
+        else if (filePath == transactionsFile) {
             parse.transactionList(readFile);
         }
         else {
@@ -118,20 +157,26 @@ bool ReadFileData(string fileName) {
     return true;
 }
 
-bool WriteFileData(string fileName) {
+/**
+ * Write to appropriate file
+ * 
+ * @param filePath File path String
+ * @return `bool` A boolean denoting if the values were successfully written
+ */
+bool WriteFileData(string filePath) {
     Writer write;
     ofstream writeFile;
-    writeFile.open(fileName);
+    writeFile.open(filePath);
     if (writeFile.is_open()) {
         cout << "Writing to: " << customersFile << endl;
         // Parse files
-        if (fileName == customersFile) {
+        if (filePath == customersFile) {
             write.customerList (writeFile);
         }
-        else if (fileName == productsFile) {
+        else if (filePath == productsFile) {
             write.productList(writeFile);
         }
-        else if (fileName == transactionsFile) {
+        else if (filePath == transactionsFile) {
             write.transactionList(writeFile);
         }
         else {
@@ -148,6 +193,11 @@ bool WriteFileData(string fileName) {
     return true;
 }
 
+/**
+ * Application main function
+ * 
+ * @return `int` Exit code
+ */
 int main() {
     // Read File Data into memory
     ReadFileData(customersFile);

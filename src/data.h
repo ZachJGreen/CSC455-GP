@@ -5,6 +5,10 @@
 #include <string>
 #include <list>
 using namespace std;
+/**
+* This class defines common data structures to be used across
+* different application components
+*/
 class Structures {
     public:
         struct Customer{
