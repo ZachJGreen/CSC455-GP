@@ -1,3 +1,6 @@
 using namespace std;
-class ProductManager {
+
+namespace Product {
+    class ProductManager {
 };
+}

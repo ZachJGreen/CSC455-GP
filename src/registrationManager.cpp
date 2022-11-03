@@ -1,3 +1,6 @@
 using namespace std;
-class RegistrationManager {
+
+namespace Registration {
+    class RegistrationManager {
 };
+}
