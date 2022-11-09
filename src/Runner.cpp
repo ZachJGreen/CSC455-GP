@@ -3,7 +3,6 @@
 #include <regex>
 #include <sstream>
 #include <string>
-#include <list>
 
 // File dependencies
 #include "data.h"
@@ -15,15 +14,18 @@ string transactionsFile = "../logs/transactions.txt";
 
 class Parser {
     public:
+        vector<Structures::Customer> customerData;
+        vector<Structures::Product> productData;
+        vector<Structures::Transaction> transactionData;
         /**
-         * Parse customer data from file to list
+         * Parse customer data from file to vector
          * 
          * @param parseFile File whos values are to be parsed into Customer objects
-         * @return `list<Structures::Customer>` A list of parsed Customer objects
+         * @return `vector<Structures::Customer>` A vector of parsed Customer objects
          */
-        list<Structures::Customer> customerList(ifstream& parseFile) {
+        vector<Structures::Customer> customerList(ifstream& parseFile) {
             string line;
-            list<Structures::Customer> customers;
+            vector<Structures::Customer> customers;
             if (parseFile.is_open()) {
                 Structures::Customer readCustomer = Structures::Customer();
                 while ( getline(parseFile, line) ) {
@@ -52,21 +54,20 @@ class Parser {
                     }
                 }
                 parseFile.close();
-                parseFile.clear();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
             }
             return customers;
         };
         /**
-         * Parse transaction data from file to list
+         * Parse transaction data from file to vector
          * 
          * @param parseFile File whos values are to be parsed into Transaction objects
-         * @return `list<Structures::Transaction>` A list of parsed Transaction objects
+         * @return `vector<Structures::Transaction>` A vector of parsed Transaction objects
          */
-        list<Structures::Transaction> transactionList(ifstream& parseFile) {
+        vector<Structures::Transaction> transactionList(ifstream& parseFile) {
             string line;
-            list<Structures::Transaction> transactions;
+            vector<Structures::Transaction> transactions;
             if (parseFile.is_open()) {
                 Structures::Transaction readTransaction = Structures::Transaction();
                 while ( getline(parseFile, line) ) {
@@ -77,7 +78,7 @@ class Parser {
                         readTransaction.customerId = getLastValue(line);
                     }
                     else if(regex_search(line, transactionProductRegex)) {
-                        readTransaction.productId = parseTransactionProducts(line);
+                        readTransaction.productIds = parseTransactionProducts(line);
                     }
                     else if(regex_search(line, transactionTotalRegex)) {
                         readTransaction.total = stod(getLastValue(line));
@@ -95,21 +96,20 @@ class Parser {
                 }
                 cout << transactions.size() << endl;
                 parseFile.close();
-                parseFile.clear();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
             }
             return transactions;
         }
         /**
-         * Parse product data from file to list
+         * Parse product data from file to vector
          * 
          * @param parseFile File whos values are to be parsed into Product objects
-         * @return `list<Structures::Product>` A list of parsed Product objects
+         * @return `vector<Structures::Product>` A vector of parsed Product objects
          */
-        list<Structures::Product> productList(ifstream& parseFile) {
+        vector<Structures::Product> productList(ifstream& parseFile) {
             string line;
-            list<Structures::Product> products;
+            vector<Structures::Product> products;
             if (parseFile.is_open()) {
                 Structures::Product readProduct = Structures::Product();
                 while ( getline(parseFile, line) ) {
@@ -134,7 +134,6 @@ class Parser {
                 }
                 cout << products.size() << endl;
                 parseFile.close();
-                parseFile.clear();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
             }
@@ -159,18 +158,29 @@ class Parser {
             regex transactionTotalRegex = regex("Total amount ");
             regex transactionRewardsRegex = regex("Total reward points ");
 
+            /**
+             * Returns the last element in a string of space seperated words
+             * 
+             * @param valueString String to find last value of
+             * @param delimiter Optional parameter to split string based on - defaults to " "
+             * @return `string` The last element in the string
+             */
             string getLastValue(string valueString, string delimiter = " ") {
-                cout << "Getting last value of: " << valueString << endl;
                 vector<string> elems;
                 size_t pos = 0;
                 while ((pos = valueString.find(delimiter)) != string::npos) {
                     elems.push_back(valueString.substr(0, pos));
                     valueString.erase(0, pos + delimiter.length());
                 }
-                cout << "EndItem: " << valueString << endl;
                 return valueString;
             }
 
+             /**
+             * Returns a vector of product ids
+             * 
+             * @param valueString String to turn into product id vector
+             * @return `vector<string>` A vector of product ids
+             */
             vector<string> parseTransactionProducts (string valueString) {
                 string delimiter = ", ";
                 vector<string> productIds;
@@ -188,45 +198,71 @@ class Parser {
 
 class Writer {
     public:
-    /**
-     * Write customer data from list to file
-     * 
-     * @param writeFile File to write the values of the Customer list to
-     * @return `bool` A boolean denoting if values were successfully written
-     */
-        void customerList(ofstream& writeFile){
+        /**
+         * Write customer data from vector to file
+         * 
+         * @param writeFile File to write the values of the Customer vector to
+         * @return `bool` A boolean denoting if values were successfully written
+         */
+        void customerList(vector<Structures::Customer> customerData, ofstream& writeFile){
             if (writeFile.is_open()) {
-                // Writer info goes here
+                for (int i = 0; i < customerData.size(); i++) {
+                    writeFile << "customer " << i+1 << " ID " << customerData[i].id << endl;
+                    writeFile << "customer " << i+1 << " user name " << customerData[i].username << endl;
+                    writeFile << "customer " << i+1 << " first name " << customerData[i].fname << endl;
+                    writeFile << "customer " << i+1 << " last name " << customerData[i].lname << endl;
+                    writeFile << "customer " << i+1 << " date of birth " << customerData[i].dateOfBirth << endl;
+                    writeFile << "customer " << i+1 << " total reward points " << customerData[i].rewardPoints << endl;
+                    writeFile << "-" << endl;
+                }
                 writeFile.close();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
             }
             return;
         }
-    /**
-     * Write transaction data from list to file
-     * 
-     * @param writeFile File to write the values of the Transaction list to
-     * @return `bool` A boolean denoting if values were successfully written
-     */
-        void transactionList(ofstream& writeFile){
+        /**
+         * Write transaction data from vector to file
+         * 
+         * @param writeFile File to write the values of the Transaction vector to
+         * @return `bool` A boolean denoting if values were successfully written
+         */
+        void transactionList(vector<Structures::Transaction> transactionData, ofstream& writeFile){
             if (writeFile.is_open()) {
-                // Writer info goes here
+                for (auto customer : transactionData) {
+                    writeFile << "Transaction ID " << " ID " << customer.id << endl;
+                    writeFile << "User ID " << customer.customerId << endl;
+                    stringstream products;
+                    for(int i = 0; i < customer.productIds.size(); i++) {
+                        products << "Product " << i+1 << " ID " << customer.productIds[i] << ", ";
+                    }
+                    string productsString = products.str();
+                    writeFile << productsString << endl;
+                    writeFile << "Total amount " << customer.total << endl;
+                    writeFile << "Total reward points " << customer.pointsAwarded << endl;
+                    writeFile << "-" << endl;
+                }
                 writeFile.close();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
             }
             return;
         }
-    /**
-     * Write product data from list to file
-     * 
-     * @param writeFile File to write the values of the Product list to
-     * @return `bool` A boolean denoting if values were successfully written
-     */
-        void productList(ofstream& writeFile){
+        /**
+         * Write product data from vector to file
+         * 
+         * @param writeFile File to write the values of the Product vector to
+         * @return `bool` A boolean denoting if values were successfully written
+         */
+        void productList(vector<Structures::Product> productData, ofstream& writeFile){
             if (writeFile.is_open()) {
-                // Writer info goes here
+                for (int i = 0; i < productData.size(); i++) {
+                    writeFile << "product " << i+1 << " ID " << productData[i].id << endl;
+                    writeFile << "product " << i+1 << " name " << productData[i].name << endl;
+                    writeFile << "product " << i+1 << " price " << productData[i].price << endl;
+                    writeFile << "product " << i+1 << " total items in store " << productData[i].availableItems << endl;
+                    writeFile << "-" << endl;
+                }
                 writeFile.close();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
@@ -240,7 +276,7 @@ class Writer {
  * @param filePath File path String
  * @return `bool` A boolean denoting if the values were successfully read
  */
-bool ReadFileData(string filePath) {
+bool ReadFileData(Data &data, string filePath) {
     Parser parse;
     ifstream readFile;
     readFile.open(filePath);
@@ -248,13 +284,13 @@ bool ReadFileData(string filePath) {
         cout << "Reading: " << filePath << endl;
         // Parse files
         if (filePath == customersFile) {
-            parse.customerList (readFile);
+            data.customerData = parse.customerList(readFile);
         }
         else if (filePath == productsFile) {
-            parse.productList(readFile);
+            data.productData = parse.productList(readFile);
         }
         else if (filePath == transactionsFile) {
-            parse.transactionList(readFile);
+            data.transactionData = parse.transactionList(readFile);
         }
         else {
             cout << "Error: attempted to parse an invalid file" << endl;
@@ -267,7 +303,6 @@ bool ReadFileData(string filePath) {
         readFile.close();
         return false;
     }
-    readFile.close();
     readFile.clear();
     filePath.clear();
     return true;
@@ -279,7 +314,7 @@ bool ReadFileData(string filePath) {
  * @param filePath File path String
  * @return `bool` A boolean denoting if the values were successfully written
  */
-bool WriteFileData(string filePath) {
+bool WriteFileData(Data &data, string filePath) {
     Writer write;
     ofstream writeFile;
     writeFile.open(filePath);
@@ -287,13 +322,13 @@ bool WriteFileData(string filePath) {
         cout << "Writing to: " << customersFile << endl;
         // Parse files
         if (filePath == customersFile) {
-            write.customerList (writeFile);
+            write.customerList(data.customerData, writeFile);
         }
         else if (filePath == productsFile) {
-            write.productList(writeFile);
+            write.productList(data.productData, writeFile);
         }
         else if (filePath == transactionsFile) {
-            write.transactionList(writeFile);
+            write.transactionList(data.transactionData, writeFile);
         }
         else {
             cout << "Error: attempted to write to an invalid file" << endl;
@@ -315,17 +350,18 @@ bool WriteFileData(string filePath) {
  * @return `int` Exit code
  */
 int main() {
+    Data data;
     // Read File Data into memory
-    bool cutomersRead = ReadFileData(customersFile);
-    bool productsRead = ReadFileData(productsFile);
-    bool transactionsRead = ReadFileData(transactionsFile);
+    bool cutomersRead = ReadFileData(data, customersFile);
+    bool productsRead = ReadFileData(data, productsFile);
+    bool transactionsRead = ReadFileData(data, transactionsFile);
 
     // Store File Data to memory
     /*
     *   commenting out for now to avoid writing over files with blank values
     */
-    // WriteFileData(customersFile);
-    // WriteFileData(productsFile);
-    // WriteFileData(transactionsFile);
+    WriteFileData(data, customersFile);
+    WriteFileData(data, productsFile);
+    WriteFileData(data, transactionsFile);
     return EXIT_SUCCESS;
 }
