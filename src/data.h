@@ -16,23 +16,22 @@ class Structures {
             string username;
             string fname;
             string lname;
-            time_t dateOfBirth;
-            string ccinfo;
+            string dateOfBirth;
             int rewardPoints;
         };
 
         struct Transaction {
             int id;
             string customerId;
-            list<string> productId;
+            vector<string> productId;
             double total;
             int pointsAwarded;
         };
 
         struct Product {
-            string productId;
-            string productName;
-            double productPrice;
+            string id;
+            string name;
+            double price;
             int availableItems;
         };
 };

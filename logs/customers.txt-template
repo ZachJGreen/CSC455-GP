@@ -1,6 +1,7 @@
-customer 1 ID
-customer 1 user name
-customer 1 first name
-customer 1 last name
-customer 1 date of birth
-customer 1 total reward points
+customer 1 ID 1
+customer 1 user name fakeUser
+customer 1 first name fake
+customer 1 last name user
+customer 1 date of birth 1/1/2000
+customer 1 total reward points 30
+-
