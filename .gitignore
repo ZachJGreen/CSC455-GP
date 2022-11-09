@@ -33,3 +33,4 @@
 logs/customers.txt
 logs/products.txt
 logs/transactions.txt
+.vscode/

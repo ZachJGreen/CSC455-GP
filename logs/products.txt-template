@@ -1,8 +1,10 @@
-product 1 ID
-product 1 name
-product 1 price
-product 1 total items in store
-product 2 ID
-product 2 name
-product 2 price
-product 2 total items in store
+product 1 ID 1
+product 1 name Foo
+product 1 price 100
+product 1 total items in store 10
+-
+product 2 ID 2
+product 2 name Bar
+product 2 price 200
+product 2 total items in store 11
+-
