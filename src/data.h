@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <string>
-#include <list>
 using namespace std;
 /**
 * This class defines common data structures to be used across
@@ -23,7 +22,7 @@ class Structures {
         struct Transaction {
             int id;
             string customerId;
-            vector<string> productId;
+            vector<string> productIds;
             double total;
             int pointsAwarded;
         };
@@ -34,6 +33,13 @@ class Structures {
             double price;
             int availableItems;
         };
+};
+
+class Data {
+    public:
+        vector<Structures::Customer> customerData;
+        vector<Structures::Product> productData;
+        vector<Structures::Transaction> transactionData;
 };
 
 #endif
