@@ -1,11 +1,11 @@
 #include <iostream>
 #include <fstream>
-#include <regex>
 #include <sstream>
 #include <string>
 
 // File dependencies
 #include "data.h"
+#include "registrationManager.h"
 
 using namespace std;
 string customersFile = "../logs/customers.txt";
@@ -91,10 +91,7 @@ class Parser {
                         transactions.push_back(readTransaction);
                         readTransaction = Structures::Transaction();
                     }
-                    // Temp cout, parse through data and convert to correct object
-                    cout << line << endl;
                 }
-                cout << transactions.size() << endl;
                 parseFile.close();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
@@ -126,13 +123,11 @@ class Parser {
                         readProduct.availableItems = stoi(getLastValue(line));
                     }
                     else {
-                        cout << "Weird Line: " << line << endl;
                         // New line, start next object parse
                         products.push_back(readProduct);
                         readProduct = Structures::Product();
                     }
                 }
-                cout << products.size() << endl;
                 parseFile.close();
             } else {
                 cout << "Error: attempted to access an unopened file" << endl;
@@ -351,10 +346,12 @@ bool WriteFileData(Data &data, string filePath) {
  */
 int main() {
     Data data;
+    RegistrationManager regManager;
     // Read File Data into memory
     bool cutomersRead = ReadFileData(data, customersFile);
     bool productsRead = ReadFileData(data, productsFile);
     bool transactionsRead = ReadFileData(data, transactionsFile);
+
 
     // Store File Data to memory
     /*

@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <regex>
 using namespace std;
 /**
 * This class defines common data structures to be used across
