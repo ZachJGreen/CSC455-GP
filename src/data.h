@@ -34,6 +34,7 @@ class Structures {
             string name;
             double price;
             int availableItems;
+            double rewardAmount;
         };
 };
 
